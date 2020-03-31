@@ -1,0 +1,16 @@
+Package: AstroR
+Type: Package
+Title: Statsistical methods for X-ray astronomy with R
+Version: 0.1.7
+Date: 2020-03-31
+Author: Derek M. Blue
+Maintainer: Derek M. Blue <derekmblue@protonmail.com>
+Description: A collection of Statsistical methods for X-ray
+    astronomy with R.
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  ggplot2,
+  FITSio
+RoxygenNote: 7.1.0
