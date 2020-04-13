@@ -10,31 +10,81 @@
 #' @export
 bin.lc <- function(lc, bin.width) {
   lc <- subset(lc, is.nan(lc$RATE) == FALSE)
-  time <- lc$TIME
-  time <- time - lc$TIME[1]
-  rate <- lc$RATE
-  error <- lc$ERROR
-  backv <- lc$BACKV
-  backe <- lc$BACKE
-  tmp.lc <- data.frame(time, rate, error, backv, backe)
-  colnames(tmp.lc) <- c("time", "rate", "error", "backv", "backe")
-  new.time <- seq(from = min(time), to = max(time), by = bin.width)
+  nbins <- floor((lc$TIME[[length(lc$TIME)]]-lc$TIME[[1]])/bin.width)
+  new.time <- seq(from = (bin.width/2), to = ((bin.width*nbins)-(bin.width/2)), by = bin.width)
+  new.time <- new.time + lc$TIME[1]
+  new.timed <- rep((bin.width/2), length(new.time))
   new.rate <- rep(0, length(new.time))
   new.error <- rep(0, length(new.time))
   new.backv <- rep(0, length(new.time))
   new.backe <- rep(0, length(new.time))
-  for (i in 1:length(time)) {
-    sub <- subset(tmp.lc, tmp.lc$time >= (new.time[i]-(bin.width/2)))
-    sub <- subset(sub, sub$time < (new.time[i]+(bin.width/2)))
-    new.rate[i] <- mean(sub$rate)
-    new.error[i] <- mean(sub$error^2)
-    new.backv[i] <- mean(sub$backv)
-    new.backe[i] <- mean(sub$backe^2)
+  for (i in seq(from=1,to=length(new.time),by=1)) {
+    sub <- lc[which(lc$TIME >= (new.time[i]-(bin.width/2))),]
+    sub <- sub[which(sub$TIME < (new.time[i]+(bin.width/2))),]
+    new.rate[i] <- mean(sub$RATE)
+    new.error[i] <- sqrt(sum(sub$ERROR))/length(sub$ERROR)
+    new.backv[i] <- mean(sub$BACKV)
+    new.backe[i] <- sqrt(sum(sub$BACKE))/length(sub$BACKE)
   }
-  new.timed <- rep(bin.width/2, length(new.time))
-  new.lc <- data.frame(new.time, new.timed, new.error, new.backv, new.backe)
+  new.lc <- data.frame(new.time, new.timed, new.rate, new.error, new.backv, new.backe)
   colnames(new.lc) <- c("TIME", "TIMED", "RATE", "ERROR", "BACKV", "BACKE")
   return(new.lc)
+}
+
+#' @title Hardness Ratio
+#' @description Calculates the hardness ratio
+#' @author Derek Blue
+#' @param hlc 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param slc 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @return Hardness ratio data frame with structure: TIME, TIMED, RATIO, ERROR
+#' @examples \dontrun{
+#' hrat <- bin.lc(soft.lc, hard.lc)
+#' }
+#' @export
+hard.ratio <- function(slc, hlc) {
+  time <- hlc$TIME
+  timed <- hlc$TIMED
+  ratio <- (hlc$RATE-slc$RATE)/(hlc$RATE+slc$RATE)
+  error <- sqrt(((((2*slc$RATE)/((hlc$RATE+slc$RATE)^2))*hlc$ERROR)^2)+((((-2*hlc$RATE)/((hlc$RATE+slc$RATE)^2))*slc$ERROR)^2))
+  hr.df <- data.frame(time, timed, ratio, error)
+  colnames(hr.df) <- c("TIME", "TIMED", "RATIO", "ERROR")
+  return(hr.df)
+}
+
+#' @title Set Origin
+#' @description Shifts the light curve in time so that it begins at specified origin
+#' @author Derek Blue
+#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param origin Origin time to shift start of the light curve to
+#' @return Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @examples \dontrun{
+#' lc <- lc.setOrigin(lc, 0)
+#' }
+#' @export
+lc.setOrigin <- function(lc, origin) {
+  diff <- origin - lc$TIME[1]
+  lc$TIME <- lc$TIME + diff
+  return(lc)
+}
+
+#' @title Prep Flux Flux
+#' @description Creates a flux flux data frame from the hard and soft band light curves
+#' @author Derek Blue
+#' @param hlc 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param slc 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @return Flux flux data frame with structre: SOFT.RATE, SOFT.ERROR, HARD.RATE, HARD.ERROR
+#' @examples \dontrun{
+#' ff.df <- prep.ff(soft.lc, hard.lc)
+#' }
+#' @export
+prep.ff <- function(slc, hlc) {
+  sr <- slc$RATE
+  se <- slc$ERROR
+  hr <- hlc$RATE
+  he <- hlc$ERROR
+  ff.df <- data.frame(sr, se, hr, he)
+  colnames(ff.df) <- c("SOFT.RATE", "SOFT.ERROR", "HARD.RATE", "HARD.ERROR")
+  return(ff.df)
 }
 
 #' @title Fractional Variability (Edelson)
@@ -47,10 +97,24 @@ bin.lc <- function(lc, bin.width) {
 #' fvar <- fv[1]
 #' fvar.err <- fv[2]
 #' }
+#' @importFrom stats var
 #' @export
 fvar.edelson <- function(lc) {
-  return(c((sqrt((stats::var(ls$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))),
-           ((1/(sqrt((stats::var(ls$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))*sqrt(1/(2*length(lc$RATE)))*(stats::var(ls$RATE)/(mean(lc$RATE)^2)))))
+  rate <- lc$RATE
+  error <- lc$ERROR
+  X <- mean(rate)
+  s2 <- var(rate)
+  s2err <- mean(error^2)
+  fvar <- sqrt((s2-s2err)/(X^2))
+  fvar.err <- ((1/fvar)*sqrt(1/(2*length(rate)))*(s2/(X^2)))
+  if (is.nan(fvar)) {
+    print(rate)
+    print(error)
+    print(fvar)
+  }
+  return(c(fvar,fvar.err))
+  # return(c((sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))),
+  #          ((1/(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))*sqrt(1/(2*length(lc$RATE)))*(var(lc$RATE)/(mean(lc$RATE)^2)))))
 }
 
 #' @title Fractional Variability (Vaughan)
@@ -63,12 +127,12 @@ fvar.edelson <- function(lc) {
 #' fvar <- fv[1]
 #' fvar.err <- fv[2]
 #' }
+#' @importFrom stats var
 #' @export
 fvar.vaughan <- function(lc) {
-  return(c((sqrt((stats::var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))),
-           sqrt((((sqrt(1/(2*length(lc$RATE))))*(mean(lc$ERROR^2)/((mean(lc$RATE)^2)*(sqrt((stats::var(ls$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))))^2)+(((sqrt(mean(lc$ERROR^2)/length(lc$RATE)))*(1/mean(lc$RATE)))^2))))
+  return(c((sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))),
+           sqrt((((sqrt(1/(2*length(lc$RATE))))*(mean(lc$ERROR^2)/((mean(lc$RATE)^2)*(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))))^2)+(((sqrt(mean(lc$ERROR^2)/length(lc$RATE)))*(1/mean(lc$RATE)))^2))))
 }
-
 
 #' @title Fractional Variability (Ponti)
 #' @description Calculates the fractional variability following Ponti et al. 2004, A&A, 417, 451
@@ -80,6 +144,7 @@ fvar.vaughan <- function(lc) {
 #' fvar <- fv[1]
 #' fvar.err <- fv[2]
 #' }
+#' @importFrom stats var
 #' @export
 fvar.ponti <- function(lc) {
   return(c(sqrt(sum(((lc$RATE-mean(lc$RATE))^2)/(length(lc$RATE)-1)))/mean(lc$RATE),

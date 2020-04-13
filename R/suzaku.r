@@ -15,5 +15,7 @@ suzaku.lc <- function(scpath, bgpath) {
   lc <- data.frame(sc_raw$col[1],sc_raw$col[1],sc_raw$col[2],sc_raw$col[3],bg_raw$col[2],bg_raw$col[3])
   colnames(lc) <- c("TIME", "TIMED", "RATE", "ERROR", "BACKV", "BACKE")
   lc$TIMED <- (lc$TIME[2]-lc$TIME[1])/2
+  lc <- subset(lc, is.nan(lc$RATE) == FALSE)
+  lc <- subset(lc, lc$RATE > 0)
   return(lc)
 }

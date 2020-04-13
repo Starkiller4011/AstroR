@@ -4,14 +4,16 @@
 \alias{lc.plot}
 \title{Plot Light Curve}
 \usage{
-lc.plot(lc, xlab = "Time [s]", ylab = "Rate [count/s]")
+lc.plot(lc, xlab = "Time [s]", ylab = "Rate [count/s]", background = FALSE)
 }
 \arguments{
-\item{lc}{Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{lc}{required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{xlab}{optional: X axis label}
+\item{xlab}{optional string: X axis label}
 
-\item{ylab}{optional: Y axis label}
+\item{ylab}{optional string: Y axis label}
+
+\item{background}{optional bool: If TRUE plot the background of the light curve, defaults to FALSE}
 }
 \value{
 Plot of the source and background light curve
@@ -21,8 +23,7 @@ Plots the source and background of a light curve
 }
 \examples{
 \dontrun{
-plt <- lc.plot(lightcurve)
-plot(plt)
+plot(lc.plot(lightcurve, background = TRUE))
 }
 }
 \author{
