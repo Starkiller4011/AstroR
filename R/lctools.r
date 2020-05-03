@@ -31,6 +31,41 @@ bin.lc <- function(lc, bin.width) {
   return(new.lc)
 }
 
+#' @title Simulate Light Curve
+#' @description Simulates a light curve from a given power spectrum
+#' @author Derek Blue
+#' @param beta Slope of the PSD for the simulated light curve
+#' @param bins Number of data points for the simulated light curve, defaults to 1024
+#' @param length Observation length, in seconds, for the simulated light curve, defaults to 100000
+#' @param scale.factor Scaling factor for the simulated light curve, defaults to 1
+#' @param shift.factor Shift factor for the simulated light curve, defaults to 0
+#' @return Simulated light curve data frame with structure: TIME, TIMED, RATE
+#' @examples \dontrun{
+#' lightcurve <- sim.lc(lightcurve, 100)
+#' }
+#' @importFrom stats fft rnorm
+#' @export
+sim.lc <- function(beta, bins = 1024, length = 100000, scale.factor = 1, shift.factor = 0) {
+  bins <- 2*bins
+  length <- 2*length
+  time <- seq(1,length, length.out = bins)
+  fourier.frequencies <- seq(1,bins)/length
+  step.one <- rnorm(bins)
+  step.two <- (1/fourier.frequencies)^(beta/2.0)
+  step.three <- step.one*step.two
+  step.four <- fft(step.three, inverse = TRUE)
+  step.five <- Re(step.four)
+  simulated.lc <- data.frame(TIME = time, TIMED = time, RATE = step.five, ERROR = step.five)
+  simulated.lc$ERROR <- 0.1 * scale.factor
+  simulated.lc$TIMED <- (simulated.lc$TIME[2]-simulated.lc$TIME[1])/2
+  simulated.lc <- subset(simulated.lc, simulated.lc$TIME < length/2)
+  simulated.lc$RATE <- simulated.lc$RATE + abs(min(simulated.lc$RATE))
+  simulated.lc$RATE <- simulated.lc$RATE / max(simulated.lc$RATE)
+  simulated.lc$RATE <- simulated.lc$RATE * scale.factor
+  simulated.lc$RATE <- simulated.lc$RATE + shift.factor
+  return(simulated.lc)
+}
+
 #' @title Hardness Ratio
 #' @description Calculates the hardness ratio
 #' @author Derek Blue
@@ -87,6 +122,7 @@ prep.ff <- function(slc, hlc) {
   return(ff.df)
 }
 
+# TODO: Fix this function
 #' @title Fractional Variability (Edelson)
 #' @description Calculates the fractional variability following Edelson et al. 2002, ApJ, 568, 610
 #' @author Derek Blue
@@ -117,6 +153,7 @@ fvar.edelson <- function(lc) {
   #          ((1/(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))*sqrt(1/(2*length(lc$RATE)))*(var(lc$RATE)/(mean(lc$RATE)^2)))))
 }
 
+# TODO: Fix this function
 #' @title Fractional Variability (Vaughan)
 #' @description Calculates the fractional variability following Vaughan et al. 2003, MNRAS, 345, 1271
 #' @author Derek Blue
@@ -134,6 +171,7 @@ fvar.vaughan <- function(lc) {
            sqrt((((sqrt(1/(2*length(lc$RATE))))*(mean(lc$ERROR^2)/((mean(lc$RATE)^2)*(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))))^2)+(((sqrt(mean(lc$ERROR^2)/length(lc$RATE)))*(1/mean(lc$RATE)))^2))))
 }
 
+# TODO: Fix this function
 #' @title Fractional Variability (Ponti)
 #' @description Calculates the fractional variability following Ponti et al. 2004, A&A, 417, 451
 #' @author Derek Blue
