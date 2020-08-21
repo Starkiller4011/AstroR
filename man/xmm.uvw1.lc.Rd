@@ -17,7 +17,7 @@ Loads XMM Newton UVW1 light curves
 }
 \examples{
 \dontrun{
-lc <- xmm.lc("obsid_pn_lccor_300-10000.fits")
+lc <- xmm.uvw1.lc("obsid_uvw1.lc")
 }
 }
 \author{

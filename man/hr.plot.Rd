@@ -4,7 +4,13 @@
 \alias{hr.plot}
 \title{Plot Hardness Ratio}
 \usage{
-hr.plot(hr.df, xlab = "Time [s]", ylab = "Ratio")
+hr.plot(
+  hr.df,
+  xlab = "Time [s]",
+  ylab = "Ratio",
+  plt.title = "Hardness Ratio",
+  show.origin = FALSE
+)
 }
 \arguments{
 \item{hr.df}{Hardness Ratio data frame with structure: TIME, RATIO, ERROR}
@@ -12,6 +18,8 @@ hr.plot(hr.df, xlab = "Time [s]", ylab = "Ratio")
 \item{xlab}{optional: X axis label}
 
 \item{ylab}{optional: Y axis label}
+
+\item{plt.title}{optional: Plot title}
 }
 \value{
 Plot of the source and background light curve

@@ -4,7 +4,14 @@
 \alias{lc.plot}
 \title{Plot Light Curve}
 \usage{
-lc.plot(lc, xlab = "Time [s]", ylab = "Rate [count/s]", background = FALSE)
+lc.plot(
+  lc,
+  xlab = "Time [s]",
+  ylab = "Rate [count/s]",
+  plt.title = "Lightcurve",
+  background = FALSE,
+  color = "black"
+)
 }
 \arguments{
 \item{lc}{required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
@@ -12,6 +19,8 @@ lc.plot(lc, xlab = "Time [s]", ylab = "Rate [count/s]", background = FALSE)
 \item{xlab}{optional string: X axis label}
 
 \item{ylab}{optional string: Y axis label}
+
+\item{plt.title}{optional: Plot title}
 
 \item{background}{optional bool: If TRUE plot the background of the light curve, defaults to FALSE}
 }

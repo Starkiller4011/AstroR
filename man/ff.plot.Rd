@@ -4,7 +4,12 @@
 \alias{ff.plot}
 \title{Plot Flux Flux}
 \usage{
-ff.plot(ff.df, xlab = "Soft Rate [count/s]", ylab = "Hard Rate [count/s]")
+ff.plot(
+  ff.df,
+  xlab = "Soft Rate [count/s]",
+  ylab = "Hard Rate [count/s]",
+  plt.title = "Flux-Flux Plot"
+)
 }
 \arguments{
 \item{ff.df}{Flux flux data frame with structure: SOFT.RATE, SOFT.ERROR, HARD.RATE, HARD.ERROR}
@@ -12,6 +17,8 @@ ff.plot(ff.df, xlab = "Soft Rate [count/s]", ylab = "Hard Rate [count/s]")
 \item{xlab}{optional: X axis label}
 
 \item{ylab}{optional: Y axis label}
+
+\item{plt.title}{optional: Plot title}
 }
 \value{
 Plot of the hard band flux vs soft band flux

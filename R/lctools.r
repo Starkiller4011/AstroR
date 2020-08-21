@@ -34,6 +34,25 @@ bin.lc <- function(lc, bin.width) {
 #' @title Simulate Light Curve
 #' @description Simulates a light curve from a given power spectrum
 #' @author Derek Blue
+#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @return Light curve data frame normalized by it mean with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @examples \dontrun{
+#' lc <- xmm.pn.lc(fits_file_path)
+#' lc <- normalize.lc(lc)
+#' }
+#' @importFrom stats fft rnorm
+#' @export
+normalize.lc <- function(lc) {
+  lc.mean <- mean(lc$RATE)
+  lc.mean.err <- mean(lc$ERROR)
+  lc$RATE <- (lc$RATE / lc.mean)
+  lc$ERROR <- (lc$ERROR / lc.mean)
+  return(lc)
+}
+
+#' @title Simulate Light Curve
+#' @description Simulates a light curve from a given power spectrum
+#' @author Derek Blue
 #' @param beta Slope of the PSD for the simulated light curve
 #' @param bins Number of data points for the simulated light curve, defaults to 1024
 #' @param length Observation length, in seconds, for the simulated light curve, defaults to 100000
@@ -47,8 +66,7 @@ bin.lc <- function(lc, bin.width) {
 #' @export
 sim.lc <- function(beta, bins = 1024, length = 100000, scale.factor = 1, shift.factor = 0) {
   bins <- 2*bins
-  length <- 2*length
-  time <- seq(1,length, length.out = bins)
+  time <- seq(1,2*length, length.out = bins)
   fourier.frequencies <- seq(1,bins)/length
   step.one <- rnorm(bins)
   step.two <- (1/fourier.frequencies)^(beta/2.0)
@@ -58,12 +76,63 @@ sim.lc <- function(beta, bins = 1024, length = 100000, scale.factor = 1, shift.f
   simulated.lc <- data.frame(TIME = time, TIMED = time, RATE = step.five, ERROR = step.five)
   simulated.lc$ERROR <- 0.1 * scale.factor
   simulated.lc$TIMED <- (simulated.lc$TIME[2]-simulated.lc$TIME[1])/2
-  simulated.lc <- subset(simulated.lc, simulated.lc$TIME < length/2)
+  simulated.lc <- subset(simulated.lc, simulated.lc$TIME < length)
   simulated.lc$RATE <- simulated.lc$RATE + abs(min(simulated.lc$RATE))
   simulated.lc$RATE <- simulated.lc$RATE / max(simulated.lc$RATE)
   simulated.lc$RATE <- simulated.lc$RATE * scale.factor
   simulated.lc$RATE <- simulated.lc$RATE + shift.factor
   return(simulated.lc)
+}
+
+#' @title Simulate Lagged Light Curves
+#' @description Simulates two light curve from a given power spectrum with a time lag
+#' @author Derek Blue
+#' @param beta Slope of the PSD for the simulated light curve
+#' @param bins Number of data points for the simulated light curve, defaults to 1024
+#' @param length Observation length, in seconds, for the simulated light curve, defaults to 100000
+#' @param time.lag Lag in seconds to apply to the second light curve
+#' @param freq.range Frequency range in Fourier space to apply the time lag
+#' @param scale.factor Scaling factor for the simulated light curves, defaults to 1
+#' @param shift.factor Shift factor for the simulated light curves, defaults to 0
+#' @return Simulated light curve data frames with structure: TIME, TIMED, RATE
+#' @examples \dontrun{
+#' lcdf <- sim.lc.lag(lightcurve, 100, time.lag = 114)
+#' lc1 <- lcdf[[1]]
+#' lc2 <- lcdf[[2]]
+#' }
+#' @importFrom stats fft rnorm
+#' @export
+sim.lc.lag <- function(beta, bins = 1024, length = 100000, time.lag = 0, freq.range = c(1e-4,1e-3), scale.factor = 1, shift.factor = 0) {
+  bins <- 20*bins
+  time <- seq(1,2*length*10, length.out = bins)
+  fourier.frequencies <- seq(1,bins)/length
+  step.one <- rnorm(bins)
+  step.two <- (1/fourier.frequencies)^(beta/2.0)
+  step.three <- step.one*step.two
+  std.dft <- step.three
+  lag.dft <- step.three
+  for (i in 1:length(fourier.frequencies)) {
+    f <- fourier.frequencies[[i]]
+    if ((f > freq.range[[1]]) && (f < freq.range[[2]])) {
+      lag.dft[[i]] <- (2*pi*time.lag*f)
+    }
+  }
+  std.lc <- Re(fft(std.dft, inverse = TRUE))
+  lag.lc <- Re(fft(lag.dft, inverse = TRUE))
+  simulated.lcs <- data.frame(TIME = time, TIMED = time, LC1.RATE = std.lc, LC1.ERROR = std.lc, LC2.RATE = lag.lc, LC2.ERROR = lag.lc)
+  simulated.lcs$LC1.ERROR <- 0.1 * scale.factor
+  simulated.lcs$LC2.ERROR <- 0.1 * scale.factor
+  simulated.lcs$TIMED <- (simulated.lcs$TIME[2]-simulated.lcs$TIME[1])/2
+  simulated.lcs <- subset(simulated.lcs, simulated.lcs$TIME < length)
+  simulated.lcs$LC1.RATE <- simulated.lcs$LC1.RATE + abs(min(simulated.lcs$LC1.RATE))
+  simulated.lcs$LC1.RATE <- simulated.lcs$LC1.RATE / max(simulated.lcs$LC1.RATE)
+  simulated.lcs$LC1.RATE <- simulated.lcs$LC1.RATE * scale.factor
+  simulated.lcs$LC1.RATE <- simulated.lcs$LC1.RATE + shift.factor
+  simulated.lcs$LC2.RATE <- simulated.lcs$LC2.RATE + abs(min(simulated.lcs$LC2.RATE))
+  simulated.lcs$LC2.RATE <- simulated.lcs$LC2.RATE / max(simulated.lcs$LC2.RATE)
+  simulated.lcs$LC2.RATE <- simulated.lcs$LC2.RATE * scale.factor
+  simulated.lcs$LC2.RATE <- simulated.lcs$LC2.RATE + shift.factor
+  return(simulated.lcs)
 }
 
 #' @title Hardness Ratio
@@ -171,7 +240,6 @@ fvar.vaughan <- function(lc) {
            sqrt((((sqrt(1/(2*length(lc$RATE))))*(mean(lc$ERROR^2)/((mean(lc$RATE)^2)*(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))))^2)+(((sqrt(mean(lc$ERROR^2)/length(lc$RATE)))*(1/mean(lc$RATE)))^2))))
 }
 
-# TODO: Fix this function
 #' @title Fractional Variability (Ponti)
 #' @description Calculates the fractional variability following Ponti et al. 2004, A&A, 417, 451
 #' @author Derek Blue

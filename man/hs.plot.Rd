@@ -4,7 +4,13 @@
 \alias{hs.plot}
 \title{Plot Hard and Soft Light Curves}
 \usage{
-hs.plot(slc, hlc, xlab = "Time [s]", ylab = "Rate [count/s]")
+hs.plot(
+  slc,
+  hlc,
+  xlab = "Time [s]",
+  ylab = "Rate [count/s]",
+  plt.title = "Hard and Soft Lightcurves"
+)
 }
 \arguments{
 \item{slc}{0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
@@ -14,6 +20,8 @@ hs.plot(slc, hlc, xlab = "Time [s]", ylab = "Rate [count/s]")
 \item{xlab}{optional: X axis label}
 
 \item{ylab}{optional: Y axis label}
+
+\item{plt.title}{optional: Plot title}
 }
 \value{
 Plot of the source and background light curve
