@@ -7,9 +7,9 @@
 suzaku.lc(scpath, bgpath)
 }
 \arguments{
-\item{scpath}{Absolute or relative file path to the source light curve}
+\item{scpath}{required string: Absolute or relative file path to the source light curve}
 
-\item{bgpath}{Absolute or relative file path to the background light curve}
+\item{bgpath}{required string: Absolute or relative file path to the background light curve}
 }
 \value{
 Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE

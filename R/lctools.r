@@ -1,8 +1,8 @@
 #' @title Bin Light Curve
 #' @description Bins a light curve into evenly spaced time bins
 #' @author Derek Blue
-#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param bin.width Time delta width of the time bins, must be in the same units as lc$TIME
+#' @param lc required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param bin.width required numeric: Time delta width of the time bins, must be in the same units as lc$TIME
 #' @return Light curve data frame binned into evenly spaced time bins with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @examples \dontrun{
 #' lightcurve <- bin.lc(lightcurve, 100)
@@ -31,14 +31,33 @@ bin.lc <- function(lc, bin.width) {
   return(new.lc)
 }
 
+#' @title Normalize Light Curve
+#' @description Normalizes a light curve based on its mean count rate
+#' @author Derek Blue
+#' @param lc required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @return Light curve data frame normalized by it mean with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @examples \dontrun{
+#' lc <- xmm.pn.lc(fits_file_path)
+#' lc <- normalize.lc(lc)
+#' }
+#' @importFrom stats fft rnorm
+#' @export
+normalize.lc <- function(lc) {
+  lc.mean <- mean(lc$RATE)
+  lc.mean.err <- mean(lc$ERROR)
+  lc$RATE <- (lc$RATE / lc.mean)
+  lc$ERROR <- (lc$ERROR / lc.mean)
+  return(lc)
+}
+
 #' @title Simulate Light Curve
 #' @description Simulates a light curve from a given power spectrum
 #' @author Derek Blue
-#' @param beta Slope of the PSD for the simulated light curve
-#' @param bins Number of data points for the simulated light curve, defaults to 1024
-#' @param length Observation length, in seconds, for the simulated light curve, defaults to 100000
-#' @param scale.factor Scaling factor for the simulated light curve, defaults to 1
-#' @param shift.factor Shift factor for the simulated light curve, defaults to 0
+#' @param beta required numeric: Slope of the PSD for the simulated light curve
+#' @param bins optional numeric: Number of data points for the simulated light curve, defaults to 1024
+#' @param length optional numeric: Observation length, in seconds, for the simulated light curve, defaults to 100000
+#' @param scale.factor optional numeric: Scaling factor for the simulated light curve, defaults to 1
+#' @param shift.factor optional numeric: Shift factor for the simulated light curve, defaults to 0
 #' @return Simulated light curve data frame with structure: TIME, TIMED, RATE
 #' @examples \dontrun{
 #' lightcurve <- sim.lc(lightcurve, 100)
@@ -47,8 +66,7 @@ bin.lc <- function(lc, bin.width) {
 #' @export
 sim.lc <- function(beta, bins = 1024, length = 100000, scale.factor = 1, shift.factor = 0) {
   bins <- 2*bins
-  length <- 2*length
-  time <- seq(1,length, length.out = bins)
+  time <- seq(1,2*length, length.out = bins)
   fourier.frequencies <- seq(1,bins)/length
   step.one <- rnorm(bins)
   step.two <- (1/fourier.frequencies)^(beta/2.0)
@@ -58,7 +76,7 @@ sim.lc <- function(beta, bins = 1024, length = 100000, scale.factor = 1, shift.f
   simulated.lc <- data.frame(TIME = time, TIMED = time, RATE = step.five, ERROR = step.five)
   simulated.lc$ERROR <- 0.1 * scale.factor
   simulated.lc$TIMED <- (simulated.lc$TIME[2]-simulated.lc$TIME[1])/2
-  simulated.lc <- subset(simulated.lc, simulated.lc$TIME < length/2)
+  simulated.lc <- subset(simulated.lc, simulated.lc$TIME < length)
   simulated.lc$RATE <- simulated.lc$RATE + abs(min(simulated.lc$RATE))
   simulated.lc$RATE <- simulated.lc$RATE / max(simulated.lc$RATE)
   simulated.lc$RATE <- simulated.lc$RATE * scale.factor
@@ -69,8 +87,8 @@ sim.lc <- function(beta, bins = 1024, length = 100000, scale.factor = 1, shift.f
 #' @title Hardness Ratio
 #' @description Calculates the hardness ratio
 #' @author Derek Blue
-#' @param hlc 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param slc 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param slc required data frame: 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param hlc required data frame: 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @return Hardness ratio data frame with structure: TIME, TIMED, RATIO, ERROR
 #' @examples \dontrun{
 #' hrat <- bin.lc(soft.lc, hard.lc)
@@ -89,8 +107,8 @@ hard.ratio <- function(slc, hlc) {
 #' @title Set Origin
 #' @description Shifts the light curve in time so that it begins at specified origin
 #' @author Derek Blue
-#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param origin Origin time to shift start of the light curve to
+#' @param lc required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param origin required numeric: Origin time to shift start of the light curve to
 #' @return Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @examples \dontrun{
 #' lc <- lc.setOrigin(lc, 0)
@@ -105,8 +123,8 @@ lc.setOrigin <- function(lc, origin) {
 #' @title Prep Flux Flux
 #' @description Creates a flux flux data frame from the hard and soft band light curves
 #' @author Derek Blue
-#' @param hlc 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param slc 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param slc required data frame: 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param hlc required data frame: 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @return Flux flux data frame with structre: SOFT.RATE, SOFT.ERROR, HARD.RATE, HARD.ERROR
 #' @examples \dontrun{
 #' ff.df <- prep.ff(soft.lc, hard.lc)
@@ -122,60 +140,10 @@ prep.ff <- function(slc, hlc) {
   return(ff.df)
 }
 
-# TODO: Fix this function
-#' @title Fractional Variability (Edelson)
-#' @description Calculates the fractional variability following Edelson et al. 2002, ApJ, 568, 610
-#' @author Derek Blue
-#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @return List containing fractional variability and error for the light curve
-#' @examples \dontrun{
-#' fv <- fvar.edelson(lightcurve)
-#' fvar <- fv[1]
-#' fvar.err <- fv[2]
-#' }
-#' @importFrom stats var
-#' @export
-fvar.edelson <- function(lc) {
-  rate <- lc$RATE
-  error <- lc$ERROR
-  X <- mean(rate)
-  s2 <- var(rate)
-  s2err <- mean(error^2)
-  fvar <- sqrt((s2-s2err)/(X^2))
-  fvar.err <- ((1/fvar)*sqrt(1/(2*length(rate)))*(s2/(X^2)))
-  if (is.nan(fvar)) {
-    print(rate)
-    print(error)
-    print(fvar)
-  }
-  return(c(fvar,fvar.err))
-  # return(c((sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))),
-  #          ((1/(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))*sqrt(1/(2*length(lc$RATE)))*(var(lc$RATE)/(mean(lc$RATE)^2)))))
-}
-
-# TODO: Fix this function
-#' @title Fractional Variability (Vaughan)
-#' @description Calculates the fractional variability following Vaughan et al. 2003, MNRAS, 345, 1271
-#' @author Derek Blue
-#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @return List containing fractional variability and error for the light curve
-#' @examples \dontrun{
-#' fv <- fvar.vaughan(lightcurve)
-#' fvar <- fv[1]
-#' fvar.err <- fv[2]
-#' }
-#' @importFrom stats var
-#' @export
-fvar.vaughan <- function(lc) {
-  return(c((sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))),
-           sqrt((((sqrt(1/(2*length(lc$RATE))))*(mean(lc$ERROR^2)/((mean(lc$RATE)^2)*(sqrt((var(lc$RATE)-mean(lc$ERROR^2))/(mean(lc$RATE)^2))))))^2)+(((sqrt(mean(lc$ERROR^2)/length(lc$RATE)))*(1/mean(lc$RATE)))^2))))
-}
-
-# TODO: Fix this function
 #' @title Fractional Variability (Ponti)
 #' @description Calculates the fractional variability following Ponti et al. 2004, A&A, 417, 451
 #' @author Derek Blue
-#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param lc required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @return List containing fractional variability and error for the light curve
 #' @examples \dontrun{
 #' fv <- fvar.ponti(lightcurve)

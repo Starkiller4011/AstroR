@@ -8,7 +8,9 @@ lc.overplot(
   lc1,
   lc2,
   xlab = "Time [s]",
-  ylab = "Rate [count/s]",
+  y1lab = "Rate [count/s]",
+  y2lab = "Rate [count/s]",
+  plt.title = "LC1 vs LC2",
   bg1 = FALSE,
   bg2 = FALSE,
   names = c("lc1", "lc2")
@@ -21,19 +23,23 @@ lc.overplot(
 
 \item{xlab}{optional string: X axis label}
 
-\item{ylab}{optional string: Y axis label}
+\item{y1lab}{optional string: Left Y axis label}
 
-\item{bg1}{optional bool: If TRUE plot the background of the first light curve, defaults to FALSE}
+\item{y2lab}{optional string: Right Y axis label}
 
-\item{bg2}{optional bool: If TRUE plot the background of the second light curve, defaults to FALSE}
+\item{plt.title}{optional string: Plot title}
 
-\item{names}{optional list: Names for the two light curves}
+\item{bg1}{optional boolean: If TRUE plot the background of the first light curve, defaults to FALSE}
+
+\item{bg2}{optional boolean: If TRUE plot the background of the second light curve, defaults to FALSE}
+
+\item{names}{optional list of strings: Names for the two light curves}
 }
 \value{
 Plot of the source and background light curve
 }
 \description{
-Overplots the source and background of two light curves
+Creates a plot of the source and background of two light curves
 }
 \examples{
 \dontrun{

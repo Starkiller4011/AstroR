@@ -7,9 +7,9 @@
 bin.lc(lc, bin.width)
 }
 \arguments{
-\item{lc}{Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{lc}{required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{bin.width}{Time delta width of the time bins, must be in the same units as lc$TIME}
+\item{bin.width}{required numeric: Time delta width of the time bins, must be in the same units as lc$TIME}
 }
 \value{
 Light curve data frame binned into evenly spaced time bins with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE

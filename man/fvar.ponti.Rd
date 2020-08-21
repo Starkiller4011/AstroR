@@ -7,7 +7,7 @@
 fvar.ponti(lc)
 }
 \arguments{
-\item{lc}{Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{lc}{required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 }
 \value{
 List containing fractional variability and error for the light curve

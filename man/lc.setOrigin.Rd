@@ -7,9 +7,9 @@
 lc.setOrigin(lc, origin)
 }
 \arguments{
-\item{lc}{Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{lc}{required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{origin}{Origin time to shift start of the light curve to}
+\item{origin}{required numeric: Origin time to shift start of the light curve to}
 }
 \value{
 Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
