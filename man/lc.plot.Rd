@@ -20,15 +20,17 @@ lc.plot(
 
 \item{ylab}{optional string: Y axis label}
 
-\item{plt.title}{optional: Plot title}
+\item{plt.title}{optional string: Plot title}
 
-\item{background}{optional bool: If TRUE plot the background of the light curve, defaults to FALSE}
+\item{background}{optional boolean: If TRUE plot the background of the light curve, defaults to FALSE}
+
+\item{color}{optional string: plotting color}
 }
 \value{
 Plot of the source and background light curve
 }
 \description{
-Plots the source and background of a light curve
+Creates a plot of the source and background of a light curve
 }
 \examples{
 \dontrun{

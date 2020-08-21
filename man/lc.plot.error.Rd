@@ -12,19 +12,19 @@ lc.plot.error(
 )
 }
 \arguments{
-\item{lc}{Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{lc}{required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{bin.width}{optional: Histogram bin width}
+\item{bin.width}{optional numeric: Histogram bin width}
 
-\item{xlab}{optional: X axis label}
+\item{xlab}{optional string: X axis label}
 
-\item{ylab}{optional: Y axis label}
+\item{ylab}{optional string: Y axis label}
 }
 \value{
 Plot of the source and background light curve
 }
 \description{
-Plots the distribution of measurement error for a lightcurve
+Creates a plot of the distribution of measurement error for a lightcurve
 }
 \examples{
 \dontrun{

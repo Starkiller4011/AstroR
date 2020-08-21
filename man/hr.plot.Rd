@@ -13,19 +13,21 @@ hr.plot(
 )
 }
 \arguments{
-\item{hr.df}{Hardness Ratio data frame with structure: TIME, RATIO, ERROR}
+\item{hr.df}{required data frame: Hardness Ratio data frame with structure: TIME, RATIO, ERROR}
 
-\item{xlab}{optional: X axis label}
+\item{xlab}{optional string: X axis label}
 
-\item{ylab}{optional: Y axis label}
+\item{ylab}{optional string: Y axis label}
 
-\item{plt.title}{optional: Plot title}
+\item{plt.title}{optional string: Plot title}
+
+\item{show.origin}{optional boolean: If TRUE add a horizontal line at y=0, defaults to FALSE}
 }
 \value{
 Plot of the source and background light curve
 }
 \description{
-Plots the source and background of a light curve
+Creates a plot of the source and background of a light curve
 }
 \examples{
 \dontrun{

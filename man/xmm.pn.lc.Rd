@@ -7,7 +7,7 @@
 xmm.pn.lc(filepath)
 }
 \arguments{
-\item{filepath}{Absolute or relative file path to the "*lccorr*.fits" file}
+\item{filepath}{required string: Absolute or relative file path to the "*lccorr*.fits" file}
 }
 \value{
 Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE

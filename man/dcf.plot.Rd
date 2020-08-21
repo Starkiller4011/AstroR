@@ -13,19 +13,21 @@ dcf.plot(
 )
 }
 \arguments{
-\item{dcf.df}{DCF data frame with strcture: tau, dcf, p90, p95, p99, n90, n95, n99}
+\item{dcf.df}{required data frame: DCF data frame with strcture: tau, dcf, p90, p95, p99, n90, n95, n99}
 
-\item{contours}{optional: boolean to include or exclude confidence contours}
+\item{contours}{optional boolean: If TRUE plot the 90\%, 95\%, and 99.99\% confidence contours, defaults to FALSE}
 
-\item{ylab}{optional: Y axis label}
+\item{xlab}{optional string: X axis label}
 
-\item{plt.title}{optional: Plot title}
+\item{ylab}{optional string: Y axis label}
+
+\item{plt.title}{optional string: Plot title}
 }
 \value{
 Plot of the DCF
 }
 \description{
-Plots the DCF
+Creates a plot of the DCF
 }
 \examples{
 \dontrun{

@@ -7,7 +7,7 @@
 swift.bmag2cr(mag)
 }
 \arguments{
-\item{mag}{Swift B magnitude}
+\item{mag}{required numeric: Swift B magnitude}
 }
 \value{
 Swift B count rate

@@ -1,8 +1,8 @@
 #' @title Load Suzaku Light Curve
 #' @description Loads Suzaku light curves created using xselect, requires both source and background light curves
 #' @author Derek Blue
-#' @param scpath Absolute or relative file path to the source light curve
-#' @param bgpath Absolute or relative file path to the background light curve
+#' @param scpath required string: Absolute or relative file path to the source light curve
+#' @param bgpath required string: Absolute or relative file path to the background light curve
 #' @return Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @examples \dontrun{
 #' lc <- suzaku.lc("obsid_xi03_300-10000_sc.fits", "obsid_xi03_300-10000_bg.fits")

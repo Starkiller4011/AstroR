@@ -1,7 +1,7 @@
 #' @title Swift UVW2 Magnitude to Count Rate
 #' @description Converts the Swift UVW2 Magnitude to count rate
 #' @author Derek Blue
-#' @param mag Swift UVW2 magnitude
+#' @param mag required numeric: Swift UVW2 magnitude
 #' @return Swift UVW2 count rate
 #' @examples \dontrun{
 #' swift.uvw2$RATE <- swift.w2mag2cr(swift.uvw2$MAG)
@@ -14,7 +14,7 @@ swift.w2mag2cr <- function(mag) {
 #' @title Swift B Magnitude to Count Rate
 #' @description Converts the Swift B Magnitude to count rate
 #' @author Derek Blue
-#' @param mag Swift B magnitude
+#' @param mag required numeric: Swift B magnitude
 #' @return Swift B count rate
 #' @examples \dontrun{
 #' swift.b$RATE <- swift.bmag2cr(swift.b$MAG)

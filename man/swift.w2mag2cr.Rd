@@ -7,7 +7,7 @@
 swift.w2mag2cr(mag)
 }
 \arguments{
-\item{mag}{Swift UVW2 magnitude}
+\item{mag}{required numeric: Swift UVW2 magnitude}
 }
 \value{
 Swift UVW2 count rate

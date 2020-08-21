@@ -13,21 +13,21 @@ hs.plot(
 )
 }
 \arguments{
-\item{slc}{0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{slc}{required data frame: 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{hlc}{2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{hlc}{required data frame: 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{xlab}{optional: X axis label}
+\item{xlab}{optional string: X axis label}
 
-\item{ylab}{optional: Y axis label}
+\item{ylab}{optional string: Y axis label}
 
-\item{plt.title}{optional: Plot title}
+\item{plt.title}{optional string: Plot title}
 }
 \value{
 Plot of the source and background light curve
 }
 \description{
-Plots the source and background of the hard and soft light curves
+Creates a plot of the source and background of the hard and soft light curves
 }
 \examples{
 \dontrun{

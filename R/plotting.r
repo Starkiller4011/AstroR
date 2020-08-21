@@ -1,11 +1,12 @@
 #' @title Plot Light Curve
-#' @description Plots the source and background of a light curve
+#' @description Creates a plot of the source and background of a light curve
 #' @author Derek Blue
 #' @param lc required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @param xlab optional string: X axis label
 #' @param ylab optional string: Y axis label
-#' @param plt.title optional: Plot title
-#' @param background optional bool: If TRUE plot the background of the light curve, defaults to FALSE
+#' @param plt.title optional string: Plot title
+#' @param background optional boolean: If TRUE plot the background of the light curve, defaults to FALSE
+#' @param color optional string: plotting color
 #' @return Plot of the source and background light curve
 #' @examples \dontrun{
 #' plot(lc.plot(lightcurve, background = TRUE))
@@ -38,15 +39,17 @@ lc.plot <- function(lc, xlab = "Time [s]", ylab = "Rate [count/s]", plt.title = 
 }
 
 #' @title Overplot Light Curves
-#' @description Overplots the source and background of two light curves
+#' @description Creates a plot of the source and background of two light curves
 #' @author Derek Blue
 #' @param lc1 required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @param lc2 required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
 #' @param xlab optional string: X axis label
-#' @param ylab optional string: Y axis label
-#' @param bg1 optional bool: If TRUE plot the background of the first light curve, defaults to FALSE
-#' @param bg2 optional bool: If TRUE plot the background of the second light curve, defaults to FALSE
-#' @param names optional list: Names for the two light curves
+#' @param y1lab optional string: Left Y axis label
+#' @param y2lab optional string: Right Y axis label
+#' @param plt.title optional string: Plot title
+#' @param bg1 optional boolean: If TRUE plot the background of the first light curve, defaults to FALSE
+#' @param bg2 optional boolean: If TRUE plot the background of the second light curve, defaults to FALSE
+#' @param names optional list of strings: Names for the two light curves
 #' @return Plot of the source and background light curve
 #' @examples \dontrun{
 #' plt <- lc.plot(lightcurve)
@@ -92,12 +95,12 @@ lc.overplot <- function(lc1, lc2, xlab = "Time [s]", y1lab = "Rate [count/s]", y
 }
 
 #' @title Plot Light Curve Error
-#' @description Plots the distribution of measurement error for a lightcurve
+#' @description Creates a plot of the distribution of measurement error for a lightcurve
 #' @author Derek Blue
-#' @param lc Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param bin.width optional: Histogram bin width
-#' @param xlab optional: X axis label
-#' @param ylab optional: Y axis label
+#' @param lc required data frame: Light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param bin.width optional numeric: Histogram bin width
+#' @param xlab optional string: X axis label
+#' @param ylab optional string: Y axis label
 #' @return Plot of the source and background light curve
 #' @examples \dontrun{
 #' plt <- lc.plot(lightcurve)
@@ -127,13 +130,13 @@ lc.plot.error <- function(lc, bin.width = 0.01, xlab = "Rate Error [count/s]", y
 }
 
 #' @title Plot Hard and Soft Light Curves
-#' @description Plots the source and background of the hard and soft light curves
+#' @description Creates a plot of the source and background of the hard and soft light curves
 #' @author Derek Blue
-#' @param hlc 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param slc 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param xlab optional: X axis label
-#' @param ylab optional: Y axis label
-#' @param plt.title optional: Plot title
+#' @param slc required data frame: 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param hlc required data frame: 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param xlab optional string: X axis label
+#' @param ylab optional string: Y axis label
+#' @param plt.title optional string: Plot title
 #' @return Plot of the source and background light curve
 #' @examples \dontrun{
 #' plt <- hs.plot(lightcurve)
@@ -169,12 +172,13 @@ hs.plot <- function(slc, hlc, xlab = "Time [s]", ylab = "Rate [count/s]", plt.ti
 }
 
 #' @title Plot Hardness Ratio
-#' @description Plots the source and background of a light curve
+#' @description Creates a plot of the source and background of a light curve
 #' @author Derek Blue
-#' @param hr.df Hardness Ratio data frame with structure: TIME, RATIO, ERROR
-#' @param xlab optional: X axis label
-#' @param ylab optional: Y axis label
-#' @param plt.title optional: Plot title
+#' @param hr.df required data frame: Hardness Ratio data frame with structure: TIME, RATIO, ERROR
+#' @param xlab optional string: X axis label
+#' @param ylab optional string: Y axis label
+#' @param plt.title optional string: Plot title
+#' @param show.origin optional boolean: If TRUE add a horizontal line at y=0, defaults to FALSE
 #' @return Plot of the source and background light curve
 #' @examples \dontrun{
 #' plt <- hr.plot(lightcurve)
@@ -207,12 +211,12 @@ hr.plot <- function(hr.df, xlab = "Time [s]", ylab = "Ratio", plt.title = "Hardn
 }
 
 #' @title Plot Flux Flux
-#' @description Plots the hard band flux vs soft band flux
+#' @description Creates a plot of the hard band flux vs soft band flux
 #' @author Derek Blue
-#' @param ff.df Flux flux data frame with structure: SOFT.RATE, SOFT.ERROR, HARD.RATE, HARD.ERROR
-#' @param xlab optional: X axis label
-#' @param ylab optional: Y axis label
-#' @param plt.title optional: Plot title
+#' @param ff.df required data frame: Flux flux data frame with structure: SOFT.RATE, SOFT.ERROR, HARD.RATE, HARD.ERROR
+#' @param xlab optional string: X axis label
+#' @param ylab optional string: Y axis label
+#' @param plt.title optional string: Plot title
 #' @return Plot of the hard band flux vs soft band flux
 #' @examples \dontrun{
 #' plt <- ff.plot(ff.df)
@@ -243,13 +247,13 @@ ff.plot <- function(ff.df, xlab = "Soft Rate [count/s]", ylab = "Hard Rate [coun
 }
 
 #' @title Plot DCF
-#' @description Plots the DCF
+#' @description Creates a plot of the DCF
 #' @author Derek Blue
-#' @param dcf.df DCF data frame with strcture: tau, dcf, p90, p95, p99, n90, n95, n99
-#' @param contours optional: boolean to include or exclude confidence contours
-#' @param ylab optional: X axis label
-#' @param ylab optional: Y axis label
-#' @param plt.title optional: Plot title
+#' @param dcf.df required data frame: DCF data frame with strcture: tau, dcf, p90, p95, p99, n90, n95, n99
+#' @param contours optional boolean: If TRUE plot the 90\%, 95\%, and 99.99\% confidence contours, defaults to FALSE
+#' @param xlab optional string: X axis label
+#' @param ylab optional string: Y axis label
+#' @param plt.title optional string: Plot title
 #' @return Plot of the DCF
 #' @examples \dontrun{
 #' plt <- dcf.plot(dcf.df)
@@ -290,4 +294,20 @@ dcf.plot <- function(dcf.df, contours = FALSE, xlab = "tau [days]", ylab = "dcf"
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank())
   return(dcf.plt)
+}
+
+#' @title Save Plot
+#' @description Saves a plot to a png image
+#' @author Derek Blue
+#' @param filepath required string: Absolute or relative file path for the saved plot
+#' @param image.width optional numeric: Width of plot, defaults to 7.24
+#' @param image.height optional numeric: Height of plot, defaults to 3.46
+#' @examples \dontrun{
+#' plt <- dcf.plot(dcf.df)
+#' plot(plt)
+#' }
+#' @importFrom ggplot2 ggsave
+#' @export
+save.plot <- function(filepath, image.width = 7.24, image.height = 3.46) {
+  ggsave(normalizePath("plots/xrt_lc.png", winslash = "/", mustWork = FALSE), width = image.width, height = image.height)
 }

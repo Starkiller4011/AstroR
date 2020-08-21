@@ -7,9 +7,9 @@
 prep.ff(slc, hlc)
 }
 \arguments{
-\item{slc}{0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{slc}{required data frame: 0.3 - 1 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 
-\item{hlc}{2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
+\item{hlc}{required data frame: 2 - 10 keV light curve data frame with structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE}
 }
 \value{
 Flux flux data frame with structre: SOFT.RATE, SOFT.ERROR, HARD.RATE, HARD.ERROR

@@ -1,11 +1,11 @@
-#' @title Correct area
+#' @title Run Discrete Correlation Function
 #' @description Runs a discrete correlation function on the input light curves following Edelson & Krolik 1988, using https://github.com/svdataman/sour
 #' @author Derek Blue
-#' @param base Light curve data frame to use as base for DCF. Expects structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param compare Light curve data frame to compare to base for DCF. Expects structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
-#' @param beta PSD slope to use when simmulating light curves, should be the PSD slope of compare
-#' @param bin.width DCF bin widths for binning of the final DCF
-#' @param nsims number of simulations to run for DCF confidence contours
+#' @param base required data frame: Light curve data frame to use as base for DCF. Expects structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param compare required data frame: Light curve data frame to compare to base for DCF. Expects structure: TIME, TIMED, RATE, ERROR, BACKV, BACKE
+#' @param beta required numeric: PSD slope to use when simmulating light curves, should be the PSD slope of compare
+#' @param bin.width optional numeric: DCF bin widths for binning of the final DCF
+#' @param nsims optional numeric: number of simulations to run for DCF confidence contours
 #' @return DCF data frame with strcture: tau, dcf, p90, p95, p99, n90, n95, n99
 #' @examples \dontrun{
 #' xmm.lc <- xmm.pn.lc(xmm.pn.file.path)
@@ -13,8 +13,9 @@
 #' dcf <- run.dcf(xmm.uv.lc, xmm.lc, beta, bin.width = 1, nsims = 10)
 #' }
 #' @importFrom sour cross_correlate
+#' @importFrom stats quantile
 #' @export
-run.dcf <- function(base, compare, beta, bin.width = 1, nsims = 10) {
+dcf <- function(base, compare, beta, bin.width = 1, nsims = 10) {
   ## Get LC diff
   tdiff <- base$TIME[1] - compare$TIME[1]
   ## Set light curve origins to 0

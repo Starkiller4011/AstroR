@@ -7,15 +7,15 @@
 sim.lc(beta, bins = 1024, length = 1e+05, scale.factor = 1, shift.factor = 0)
 }
 \arguments{
-\item{beta}{Slope of the PSD for the simulated light curve}
+\item{beta}{required numeric: Slope of the PSD for the simulated light curve}
 
-\item{bins}{Number of data points for the simulated light curve, defaults to 1024}
+\item{bins}{optional numeric: Number of data points for the simulated light curve, defaults to 1024}
 
-\item{length}{Observation length, in seconds, for the simulated light curve, defaults to 100000}
+\item{length}{optional numeric: Observation length, in seconds, for the simulated light curve, defaults to 100000}
 
-\item{scale.factor}{Scaling factor for the simulated light curve, defaults to 1}
+\item{scale.factor}{optional numeric: Scaling factor for the simulated light curve, defaults to 1}
 
-\item{shift.factor}{Shift factor for the simulated light curve, defaults to 0}
+\item{shift.factor}{optional numeric: Shift factor for the simulated light curve, defaults to 0}
 }
 \value{
 Simulated light curve data frame with structure: TIME, TIMED, RATE
