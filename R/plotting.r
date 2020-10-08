@@ -309,5 +309,5 @@ dcf.plot <- function(dcf.df, contours = FALSE, xlab = "tau [days]", ylab = "dcf"
 #' @importFrom ggplot2 ggsave
 #' @export
 save.plot <- function(filepath, image.width = 7.24, image.height = 3.46) {
-  ggsave(normalizePath("plots/xrt_lc.png", winslash = "/", mustWork = FALSE), width = image.width, height = image.height)
+  ggsave(normalizePath(filepath, winslash = "/", mustWork = FALSE), width = image.width, height = image.height)
 }
